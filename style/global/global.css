@@ -12,3 +12,95 @@ body {
     min-height: 100vh;
     background-color: #FAFAFA;
 }
+
+/* =========================================
+   LOADING SCREEN (NEO-BRUTALISM + MECHANIC)
+   ========================================= */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #FFFFFF;
+    /* Changed to white */
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.8s cubic-bezier(0.85, 0, 0.15, 1);
+    /* Garage door slide up */
+}
+
+.loading-screen.hidden {
+    transform: translateY(-100%);
+    pointer-events: none;
+}
+
+.loading-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+}
+
+.logo-pulse {
+    width: 120px;
+    height: auto;
+    filter: drop-shadow(0 0 10px rgba(122, 217, 95, 0.2));
+    animation: engine-rev 1.2s infinite ease-in-out;
+}
+
+/* 4 Bouncing Dots */
+.loading-dots {
+    display: flex;
+    gap: 12px;
+}
+
+.loading-dots div {
+    width: 16px;
+    height: 16px;
+    background-color: #0D0D0D;
+    border-radius: 50%;
+    animation: bounce 0.6s infinite alternate;
+}
+
+.loading-dots div:nth-child(2) {
+    animation-delay: 0.15s;
+    background-color: #2D2D2D;
+}
+
+.loading-dots div:nth-child(3) {
+    animation-delay: 0.3s;
+    background-color: #4D4D4D;
+}
+
+.loading-dots div:nth-child(4) {
+    animation-delay: 0.45s;
+    background-color: #7AD95F;
+}
+
+/* Animations */
+@keyframes engine-rev {
+    0% {
+        transform: scale(1);
+    }
+
+    10% {
+        transform: scale(1.1);
+    }
+
+    20% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes bounce {
+    to {
+        transform: translateY(-16px);
+    }
+}

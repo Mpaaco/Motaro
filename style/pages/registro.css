@@ -1,0 +1,273 @@
+/* =========================================
+   REGISTRO PAGE STYLES
+   Focusing on mobile-first, neo-brutalism hints,
+   and exact replica of the provided design image.
+   ========================================= */
+
+.registro-container {
+    padding: 20px;
+    background-color: #FAFAFA;
+    min-height: calc(100vh - 60px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.page-title {
+    margin-top: 30px;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.page-title h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #0D0D0D;
+    margin: 0;
+}
+
+.highlight-green {
+    color: #7AD95F;
+}
+
+.registro-form {
+    width: 100%;
+    max-width: 400px;
+    /* Optimal for mobile/tablet portrait */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Base Input Card Style */
+.input-card {
+    background-color: #F8F8F8;
+    border: 1px solid #C4C4C4;
+    border-radius: 10px;
+    padding: 12px 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+}
+
+.input-card svg {
+    flex-shrink: 0;
+}
+
+.input-card input,
+.input-card textarea,
+.input-card select {
+    background: transparent;
+    border: none;
+    outline: none;
+    width: 100%;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    color: #333333;
+    font-weight: 500;
+}
+
+.input-card input::placeholder,
+.input-card textarea::placeholder,
+.input-card select:invalid {
+    color: #7A7A7A;
+    font-weight: 500;
+}
+
+/* 1. Textarea Style */
+.input-textarea-card {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.input-header {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.input-textarea-card textarea {
+    resize: none;
+    height: 40px;
+    /* Starting height */
+    line-height: 1.4;
+}
+
+.char-counter {
+    text-align: right;
+    width: 100%;
+}
+
+.char-counter span {
+    font-size: 10px;
+    color: #8C8C8C;
+}
+
+/* 2. Upload Box Style */
+.upload-card {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.upload-header {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.upload-header span {
+    font-size: 13px;
+    color: #7A7A7A;
+    font-weight: 500;
+}
+
+.upload-zone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 0;
+}
+
+.camera-icon {
+    width: 50px;
+    height: 50px;
+    background-color: #7AD95F;
+    border: 2px solid #2A2A2A;
+    /* Slight neo-brutalism touch */
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.upload-instructions {
+    border: 1px dashed #A0A0A0;
+    padding: 15px 20px;
+    text-align: center;
+    border-radius: 4px;
+    width: 80%;
+    background-color: transparent;
+}
+
+.upload-instructions p {
+    margin: 0;
+    font-size: 8px;
+    /* Very small text as in the reference image */
+    color: #626262;
+    line-height: 1.3;
+}
+
+.btn-add-file {
+    background-color: #7AD95F;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(122, 217, 95, 0.2);
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.btn-add-file:active {
+    transform: scale(0.95);
+    background-color: #6BC951;
+}
+
+/* Image Preview Grid */
+.image-preview-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    width: 100%;
+}
+
+.preview-item {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #E0E0E0;
+}
+
+.preview-item img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+.btn-remove-preview {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(255, 0, 0, 0.8);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+/* 3. Single Line Inputs */
+.single-line {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* 4. Submit Button */
+.btn-submit {
+    margin-top: 20px;
+    width: 100%;
+    background-color: #7AD95F;
+    color: #FFFFFF;
+    font-size: 18px;
+    font-weight: 600;
+    border: none;
+    border-radius: 5px;
+    padding: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn-submit:active {
+    transform: translateY(2px);
+    background-color: #6BC951;
+}
+
+/* Tablet Media Query (Optional expansion) */
+@media (min-width: 768px) {
+    .registro-form {
+        max-width: 600px;
+    }
+
+    .page-title h1 {
+        font-size: 26px;
+    }
+
+    .input-card {
+        padding: 16px 20px;
+    }
+
+    .input-card input,
+    .input-card textarea {
+        font-size: 15px;
+    }
+
+    .upload-instructions p {
+        font-size: 10px;
+    }
+
+    .btn-add-file {
+        font-size: 12px;
+        padding: 10px 20px;
+    }
+}

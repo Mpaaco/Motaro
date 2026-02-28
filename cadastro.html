@@ -18,6 +18,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- LOADING SCREEN -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <img src="./assent/img/logo.png" alt="Motaro Logo" class="logo-pulse">
+            <div class="loading-dots">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+    </div>
+
     <header>
         <div class="menu-toggle" id="menu-toggle">
             <span></span>
@@ -80,7 +93,7 @@
             </div>
 
             <div class="actions">
-                <button type="button" class="btn-primary">Próximo</button>
+                <button type="button" class="btn-primary" onclick="window.location.href='./registro.html'">Próximo</button>
                 <button type="submit" class="btn-primary">Registar<br>Solicitação</button>
             </div>
         </form>
