@@ -1,0 +1,347 @@
+header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 15px 20px;
+  height: 60px;
+  background: white
+}
+
+.namepage {
+  text-align: center;
+}
+
+.namepage h1 {
+  color: #0D0D0D;
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.logo {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.menu-toggle {
+  width: 30px;
+  height: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.menu-toggle span {
+  height: 4px;
+  width: 100%;
+  background: #7AD95F;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+
+.menu {
+  display: none;
+  position: absolute;
+  top: 60px;
+  left: 20px;
+  background: #FFFFFF;
+  border: 1px solid #7AD95F;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  min-width: 200px;
+  text-align: center;
+}
+
+.menu.active {
+  display: block;
+}
+
+.menu ul {
+  list-style: none;
+  padding: 10px 0;
+  margin: 0;
+}
+
+.menu ul li {
+  padding: 0;
+}
+
+.menu ul li a {
+  display: block;
+  padding: 10px 20px;
+  text-decoration: none;
+  color: #0D0D0D;
+  transition: background-color 0.3s;
+}
+
+
+
+.menu-toggle.active span:nth-child(1) {
+  opacity: 0;
+  transform: translateY(10px) scale(0);
+}
+
+.menu-toggle.active span:nth-child(2) {
+  /* Mantém a linha do meio para o design de uma só linha */
+  transform: scale(1.1);
+  background-color: #0D0D0D;
+  /* Fica escuro quando ativo se desejar um efeito */
+}
+
+.menu-toggle.active span:nth-child(3) {
+  opacity: 0;
+  transform: translateY(-10px) scale(0);
+}
+
+/* Home Section */
+.home {
+  padding: 20px;
+  background-color: #FFFFFF;
+  min-height: calc(100vh - 60px);
+}
+
+.welcome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+
+  padding: 20px;
+  border-radius: 15px;
+}
+
+.textw p {
+  color: #0D0D0D;
+  font-size: 18px;
+  font-weight: bold;
+  margin: 5px 0;
+}
+
+.textw p:first-child {
+  font-size: 24px;
+}
+
+.imgw img {
+  width: 80px;
+  height: auto;
+}
+
+.fila {
+  background: #7AD95F;
+  padding: 20px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  position: relative;
+  min-height: 110px;
+}
+
+.textf {
+  width: 50%;
+  z-index: 2;
+}
+
+.textf p {
+  color: #0D0D0D;
+  font-size: 20px;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.textf span {
+  font-weight: 800;
+  font-size: 24px;
+  color: #0D0D0D;
+}
+
+.imgf img {
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+  width: clamp(140px, 45vw, 320px);
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  z-index: 10;
+  filter: drop-shadow(-5px 5px 10px rgba(0, 0, 0, 0.2));
+  /* Evita o embaçamento por upscaling */
+  image-rendering: high-quality;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+.agenda {
+  background-color: #FFFFFF;
+  padding: 20px 10px;
+  border-radius: 20px;
+  margin-top: 10px;
+}
+
+.titulo h1 {
+  color: #0D0D0D;
+  font-size: 26px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.tasks {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.task-item {
+  background-color: #F5F5F5;
+  border-radius: 30px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+}
+
+.task-item p {
+  color: #0D0D0D;
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.logo img {
+  width: 40px;
+  height: auto;
+}
+
+/* 📱 Responsive Styles (Tablet & Desktop) */
+@media (min-width: 768px) {
+  header {
+    height: 80px;
+    grid-template-columns: auto 1fr auto;
+    padding: 20px 40px;
+    gap: 40px;
+  }
+
+  .menu-toggle {
+    display: none;
+  }
+
+  .logo {
+    order: 1;
+    justify-content: flex-start;
+  }
+
+  .logo img {
+    width: 50px;
+  }
+
+  .menu {
+    order: 2;
+    position: static;
+    display: flex !important;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    min-width: auto;
+  }
+
+  .menu ul {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    padding: 0;
+  }
+
+  .menu ul li a {
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-weight: 500;
+  }
+
+  .namepage {
+    order: 3;
+    text-align: right;
+  }
+
+  .namepage h1 {
+    font-size: 24px;
+  }
+
+  .home {
+    padding: 40px;
+  }
+
+  .welcome {
+    padding: 30px 40px;
+  }
+
+  .textw p:first-child {
+    font-size: 32px;
+  }
+
+  .textw p {
+    font-size: 22px;
+  }
+
+  .imgw img {
+    width: 120px;
+  }
+
+  .fila {
+    padding: 30px 40px;
+    min-height: 160px;
+  }
+
+  .textf p {
+    font-size: 26px;
+  }
+
+  .textf span {
+    font-size: 36px;
+  }
+
+  .imgf img {
+    right: 40px;
+    bottom: -15px;
+  }
+
+  .agenda {
+    padding: 30px 20px;
+  }
+
+  .tasks {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .task-item {
+    padding: 25px;
+  }
+
+  .task-item p {
+    font-size: 18px;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) and (min-width: 1024px) {
+  .menu ul li a:hover {
+    background-color: #7AD95F;
+    color: #FFFFFF;
+  }
+}
+
+@media (min-width: 1024px) {
+  .tasks {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .welcome,
+  .fila {
+    margin-bottom: 50px;
+  }
+
+  .imgw img {
+    width: 150px;
+  }
+}
