@@ -76,6 +76,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnCapturePhoto = document.getElementById('btnCapturePhoto');
     const btnSwitchCamera = document.getElementById('btnSwitchCamera');
 
+    // Approval UI Elements
+    const cameraLiveControls = document.getElementById('cameraLiveControls');
+    const cameraApprovalControls = document.getElementById('cameraApprovalControls');
+    const btnApprovePhoto = document.getElementById('btnApprovePhoto');
+    const btnRejectPhoto = document.getElementById('btnRejectPhoto');
+
     let currentStream = null;
     let currentFacingMode = 'environment'; // Default to back camera
 
@@ -131,9 +137,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         cameraVideo.srcObject = null;
         cameraModal.classList.remove('active');
+
+        // Reset UI state
+        cameraVideo.style.display = 'block';
+        cameraCanvas.style.display = 'none';
+        cameraLiveControls.style.display = 'flex';
+        cameraApprovalControls.style.display = 'none';
     }
 
-    // Capturar foto
+    // Capturar foto (Stage 1: FREEZE)
     btnCapturePhoto.addEventListener('click', () => {
         if (!currentStream) return;
 
@@ -145,6 +157,23 @@ document.addEventListener("DOMContentLoaded", () => {
         const ctx = cameraCanvas.getContext('2d');
         ctx.drawImage(cameraVideo, 0, 0, cameraCanvas.width, cameraCanvas.height);
 
+        // UI State: Show Captured Frame, Hide Live Video
+        cameraVideo.style.display = 'none';
+        cameraCanvas.style.display = 'block';
+        cameraLiveControls.style.display = 'none';
+        cameraApprovalControls.style.display = 'flex';
+    });
+
+    // Tentar Novamente (Stage 2: REJECT)
+    btnRejectPhoto.addEventListener('click', () => {
+        cameraVideo.style.display = 'block';
+        cameraCanvas.style.display = 'none';
+        cameraLiveControls.style.display = 'flex';
+        cameraApprovalControls.style.display = 'none';
+    });
+
+    // Aprovado (Stage 2: CONFIRM)
+    btnApprovePhoto.addEventListener('click', () => {
         // Converte para Blob (File)
         cameraCanvas.toBlob((blob) => {
             if (!blob) {
@@ -159,7 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Adiciona ao array de files
             addFileToPreview(file);
 
-            // Fecha a câmera após foto
+            // Fecha a câmera após aprovação
             stopCamera();
         }, 'image/jpeg', 0.85); // 85% de qualidade
     });

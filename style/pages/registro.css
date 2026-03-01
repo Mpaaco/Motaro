@@ -127,6 +127,12 @@
     align-items: center;
     gap: 15px;
     padding: 10px 0;
+    position: relative;
+    overflow: hidden;
+    min-height: 180px;
+    /* Ensure there's space for the camera to render nicely */
+    border-radius: 8px;
+    /* Optional for rounded camera corners */
 }
 
 .camera-icon {
@@ -289,21 +295,21 @@
 }
 
 /* =========================================
-   CAMERA MODAL (FULLSCREEN)
+   INLINE CAMERA COMPONENT
    ========================================= */
-.camera-modal {
+.camera-inline {
     display: none;
     /* Hidden by default */
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     background-color: #000000;
-    z-index: 9999;
+    z-index: 10;
 }
 
-.camera-modal.active {
+.camera-inline.active {
     display: block;
 }
 
@@ -315,11 +321,12 @@
     flex-direction: column;
 }
 
-#cameraVideo {
+#cameraVideo,
+#cameraCanvas {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* Fill the screen */
+    /* Fill the element bounds */
 }
 
 .camera-controls {
@@ -327,19 +334,72 @@
     bottom: 0;
     left: 0;
     width: 100%;
-    padding: 30px 20px;
+    padding: 15px 10px;
+    /* Tighter padding for inline */
     display: flex;
     justify-content: space-between;
     align-items: center;
     background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%);
 }
 
+.camera-approval-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 15px 10px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%);
+    gap: 10px;
+}
+
+/* Approval Buttons */
+.btn-primary-small {
+    background-color: #7AD95F;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.btn-primary-small:active {
+    transform: scale(0.95);
+    background-color: #6BC951;
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: #FFFFFF;
+    border: 1px solid #FFFFFF;
+    border-radius: 20px;
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.btn-secondary:active {
+    transform: scale(0.95);
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
 .btn-icon {
     background: rgba(255, 255, 255, 0.2);
     border: none;
     border-radius: 50%;
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    /* Slightly smaller for inline */
+    height: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -357,11 +417,12 @@
 }
 
 .btn-capture {
-    width: 70px;
-    height: 70px;
+    width: 50px;
+    /* Smaller for inline */
+    height: 50px;
     border-radius: 50%;
     background-color: transparent;
-    border: 4px solid white;
+    border: 3px solid white;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -370,8 +431,8 @@
 }
 
 .capture-inner {
-    width: 54px;
-    height: 54px;
+    width: 38px;
+    height: 38px;
     background-color: white;
     border-radius: 50%;
     transition: transform 0.1s;
