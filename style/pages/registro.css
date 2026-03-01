@@ -130,9 +130,14 @@
     position: relative;
     overflow: hidden;
     min-height: 180px;
-    /* Ensure there's space for the camera to render nicely */
     border-radius: 8px;
-    /* Optional for rounded camera corners */
+    transition: height 0.3s ease;
+}
+
+/* When camera is open, give the zone a fixed height so the video renders */
+.upload-zone.camera-open {
+    height: 300px;
+    min-height: 300px;
 }
 
 .camera-icon {
@@ -299,18 +304,17 @@
    ========================================= */
 .camera-inline {
     display: none;
-    /* Hidden by default */
+    /* Toggled via JS style.display */
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: #000000;
+    /* Works when parent has explicit height via .camera-open */
+    background-color: #000;
     z-index: 10;
-}
-
-.camera-inline.active {
-    display: block;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
 .camera-container {

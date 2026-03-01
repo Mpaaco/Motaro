@@ -71,6 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const cameraModal = document.getElementById('cameraModal');
     const cameraVideo = document.getElementById('cameraVideo');
     const cameraCanvas = document.getElementById('cameraCanvas');
+    const uploadZone = cameraModal.parentElement; // The .upload-zone parent
     const btnOpenCamera = document.getElementById('btnOpenCamera');
     const btnCloseCamera = document.getElementById('btnCloseCamera');
     const btnCapturePhoto = document.getElementById('btnCapturePhoto');
@@ -91,7 +92,15 @@ document.addEventListener("DOMContentLoaded", () => {
             alert(`Você pode enviar no máximo ${MAX_IMAGES} fotos.`);
             return;
         }
-        cameraModal.classList.add('active');
+
+        // getUserMedia só funciona em contexto seguro (https ou localhost)
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            alert('Seu navegador não suporta acesso à câmera, ou a página não está sendo servida de forma segura (HTTPS/localhost).');
+            return;
+        }
+
+        uploadZone.classList.add('camera-open');
+        cameraModal.style.display = 'block';
         startCamera();
     });
 
@@ -136,7 +145,8 @@ document.addEventListener("DOMContentLoaded", () => {
             currentStream = null;
         }
         cameraVideo.srcObject = null;
-        cameraModal.classList.remove('active');
+        cameraModal.style.display = 'none';
+        uploadZone.classList.remove('camera-open');
 
         // Reset UI state
         cameraVideo.style.display = 'block';
