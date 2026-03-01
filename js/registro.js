@@ -59,44 +59,146 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        files.forEach(file => {
-            if (file.type.startsWith('image/')) {
-                selectedFiles.push(file);
-                const reader = new FileReader();
-
-                reader.onload = (e) => {
-                    const previewItem = document.createElement('div');
-                    previewItem.className = 'preview-item';
-
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.alt = 'Preview da foto do problema';
-
-                    const removeBtn = document.createElement('button');
-                    removeBtn.className = 'btn-remove-preview';
-                    removeBtn.innerHTML = 'X';
-                    removeBtn.type = 'button';
-
-                    removeBtn.onclick = () => {
-                        const index = selectedFiles.indexOf(file);
-                        if (index > -1) {
-                            selectedFiles.splice(index, 1);
-                            previewItem.remove();
-                        }
-                    };
-
-                    previewItem.appendChild(img);
-                    previewItem.appendChild(removeBtn);
-                    previewContainer.appendChild(previewItem);
-                };
-
-                reader.readAsDataURL(file);
-            }
-        });
+        files.forEach(file => addFileToPreview(file));
 
         // Reseta o input para permitir selecionar a mesma imagem se for apagada
         fileInput.value = '';
     });
+
+    /* =========================================
+       3.5 CAMERA IN-APP LOGIC
+       ========================================= */
+    const cameraModal = document.getElementById('cameraModal');
+    const cameraVideo = document.getElementById('cameraVideo');
+    const cameraCanvas = document.getElementById('cameraCanvas');
+    const btnOpenCamera = document.getElementById('btnOpenCamera');
+    const btnCloseCamera = document.getElementById('btnCloseCamera');
+    const btnCapturePhoto = document.getElementById('btnCapturePhoto');
+    const btnSwitchCamera = document.getElementById('btnSwitchCamera');
+
+    let currentStream = null;
+    let currentFacingMode = 'environment'; // Default to back camera
+
+    // Abre a câmera
+    btnOpenCamera.addEventListener('click', () => {
+        if (selectedFiles.length >= MAX_IMAGES) {
+            alert(`Você pode enviar no máximo ${MAX_IMAGES} fotos.`);
+            return;
+        }
+        cameraModal.classList.add('active');
+        startCamera();
+    });
+
+    // Fecha a câmera
+    btnCloseCamera.addEventListener('click', stopCamera);
+
+    // Troca de câmera (Frontal/Traseira)
+    btnSwitchCamera.addEventListener('click', () => {
+        currentFacingMode = currentFacingMode === 'environment' ? 'user' : 'environment';
+        startCamera();
+    });
+
+    // Função para iniciar o stream da câmera
+    async function startCamera() {
+        if (currentStream) {
+            currentStream.getTracks().forEach(track => track.stop());
+        }
+
+        try {
+            const constraints = {
+                video: {
+                    facingMode: currentFacingMode,
+                    width: { ideal: 1920 },
+                    height: { ideal: 1080 }
+                },
+                audio: false
+            };
+
+            currentStream = await navigator.mediaDevices.getUserMedia(constraints);
+            cameraVideo.srcObject = currentStream;
+        } catch (error) {
+            console.error('Erro ao acessar a câmera:', error);
+            alert('Não foi possível acessar a câmera. Verifique as permissões.');
+            stopCamera();
+        }
+    }
+
+    // Função para parar a câmera e fechar modal
+    function stopCamera() {
+        if (currentStream) {
+            currentStream.getTracks().forEach(track => track.stop());
+            currentStream = null;
+        }
+        cameraVideo.srcObject = null;
+        cameraModal.classList.remove('active');
+    }
+
+    // Capturar foto
+    btnCapturePhoto.addEventListener('click', () => {
+        if (!currentStream) return;
+
+        // Configura o canvas com as dimensões reais do vídeo
+        cameraCanvas.width = cameraVideo.videoWidth;
+        cameraCanvas.height = cameraVideo.videoHeight;
+
+        // Desenha o frame atual no canvas
+        const ctx = cameraCanvas.getContext('2d');
+        ctx.drawImage(cameraVideo, 0, 0, cameraCanvas.width, cameraCanvas.height);
+
+        // Converte para Blob (File)
+        cameraCanvas.toBlob((blob) => {
+            if (!blob) {
+                alert('Erro ao capturar a imagem.');
+                return;
+            }
+
+            // Cria um arquivo fictício a partir do blob
+            const fileName = `foto_camera_${Date.now()}.jpg`;
+            const file = new File([blob], fileName, { type: 'image/jpeg' });
+
+            // Adiciona ao array de files
+            addFileToPreview(file);
+
+            // Fecha a câmera após foto
+            stopCamera();
+        }, 'image/jpeg', 0.85); // 85% de qualidade
+    });
+
+    // Função auxiliar extraída para suportar tanto Input nativo quanto Câmera In-App
+    function addFileToPreview(file) {
+        if (selectedFiles.length >= MAX_IMAGES || !file.type.startsWith('image/')) return;
+
+        selectedFiles.push(file);
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+            const previewItem = document.createElement('div');
+            previewItem.className = 'preview-item';
+
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.alt = 'Preview da foto do problema';
+
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'btn-remove-preview';
+            removeBtn.innerHTML = 'X';
+            removeBtn.type = 'button';
+
+            removeBtn.onclick = () => {
+                const index = selectedFiles.indexOf(file);
+                if (index > -1) {
+                    selectedFiles.splice(index, 1);
+                    previewItem.remove();
+                }
+            };
+
+            previewItem.appendChild(img);
+            previewItem.appendChild(removeBtn);
+            previewContainer.appendChild(previewItem);
+        };
+
+        reader.readAsDataURL(file);
+    }
 
     /* =========================================
        4. MÁSCARA DE DATA (DD/MM/YYYY)
