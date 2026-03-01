@@ -169,39 +169,55 @@
     line-height: 1.3;
 }
 
-.btn-camera-trigger {
+/* Upload Actions: Camera + Arquivo side by side */
+.upload-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    padding: 8px 0;
+}
+
+.btn-upload-option {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     background: transparent;
     border: none;
-    color: #0D0D0D;
     cursor: pointer;
-    transition: transform 0.2s;
     font-family: 'Montserrat', sans-serif;
+    color: #0D0D0D;
+    transition: transform 0.2s;
+    min-width: 80px;
 }
 
-.btn-camera-trigger:active {
+.btn-upload-option svg {
+    color: #7AD95F;
+    transition: transform 0.2s;
+}
+
+.btn-upload-option span {
+    font-size: 11px;
+    font-weight: 600;
+    color: #626262;
+}
+
+.btn-upload-option:hover svg,
+.btn-upload-option:active svg {
+    transform: scale(1.1);
+}
+
+.btn-upload-option:active {
     transform: scale(0.95);
 }
 
-.btn-camera-trigger svg {
-    color: #7AD95F;
-}
-
-.btn-camera-trigger span {
-    font-size: 14px;
-    font-weight: 600;
-}
-
-.upload-fallback {
-    font-size: 10px;
-    color: #7AD95F;
-    text-decoration: underline;
-    text-align: center;
-    cursor: pointer;
-    margin-top: -5px;
+.upload-divider {
+    font-size: 11px;
+    font-weight: 700;
+    color: #A0A0A0;
+    text-transform: uppercase;
 }
 
 /* Image Preview Grid */

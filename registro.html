@@ -93,15 +93,32 @@
                     </div>
                     
                     <input type="file" id="fotoProblema" accept="image/*" multiple max="4" style="display: none;">
-                    <button type="button" class="btn-camera-trigger" id="btnOpenCamera">
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
-                            <circle cx="12" cy="13" r="4"></circle>
-                        </svg>
-                        <span>Tirar Foto</span>
-                    </button>
-                    <!-- Alternate conventional upload -->
-                    <p class="upload-fallback" onclick="document.getElementById('fotoProblema').click()">ou escolha do <br> dispositivo</p>
+
+                    <!-- Upload Actions Row -->
+                    <div class="upload-actions">
+                        <!-- Camera -->
+                        <button type="button" class="btn-upload-option" id="btnOpenCamera">
+                            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                <circle cx="12" cy="13" r="4"></circle>
+                            </svg>
+                            <span>Tirar Foto</span>
+                        </button>
+
+                        <!-- Divider -->
+                        <span class="upload-divider">ou</span>
+
+                        <!-- File Upload -->
+                        <button type="button" class="btn-upload-option" onclick="document.getElementById('fotoProblema').click()">
+                            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="12" y1="18" x2="12" y2="12"></line>
+                                <line x1="9" y1="15" x2="15" y2="15"></line>
+                            </svg>
+                            <span>Carregar Imagem</span>
+                        </button>
+                    </div>
 
                     <!-- INLINE CAMERA COMPONENT -->
                     <div id="cameraModal" class="camera-inline" style="display: none;">
