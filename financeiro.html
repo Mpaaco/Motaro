@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financeiro - Motaro</title>
+    <link rel="icon" type="image/png" href="./assent/img/logo.png">
+    <link rel="stylesheet" href="./style/global/global.css">
+    <link rel="stylesheet" href="./style/pages/home.css">
+    <link rel="stylesheet" href="./style/pages/financeiro.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <img src="./assent/img/logo.png" alt="Motaro Logo" class="logo-pulse">
+            <div class="loading-dots"><div></div><div></div><div></div><div></div></div>
+        </div>
+    </div>
+
+    <header>
+        <div class="menu-toggle" id="menu-toggle"><span></span><span></span><span></span></div>
+        <nav class="menu" id="menu">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="cadastro.html">Registro de Cliente</a></li>
+                <li><a href="registro.html">Registro de Solicitação</a></li>
+                <li><a href="solicitacoes.html">Solicitações</a></li>
+                <li><a href="financeiro.html">Financeiro</a></li>
+            </ul>
+        </nav>
+        <div class="namepage"><h2>Financeiro</h2></div>
+        <div class="logo"><img src="./assent/img/logo.png" alt="logo"></div>
+    </header>
+
+    <main class="financeiro-page">
+        <h1 class="fin-title">Controle <span>Financeiro</span></h1>
+
+        <!-- CARDS DE RESUMO -->
+        <div class="summary-grid">
+            <div class="summary-card highlight">
+                <span class="summary-icon">💰</span>
+                <span class="summary-label">Total Recebido</span>
+                <span class="summary-value" id="totalGeral">R$ 0,00</span>
+            </div>
+            <div class="summary-card">
+                <span class="summary-icon">📅</span>
+                <span class="summary-label">Mês Atual</span>
+                <span class="summary-value" id="totalMes">R$ 0,00</span>
+            </div>
+            <div class="summary-card">
+                <span class="summary-icon">📆</span>
+                <span class="summary-label">Ano Atual</span>
+                <span class="summary-value" id="totalAno">R$ 0,00</span>
+            </div>
+            <div class="summary-card">
+                <span class="summary-icon">⏳</span>
+                <span class="summary-label">A Receber</span>
+                <span class="summary-value" id="totalPendente">R$ 0,00</span>
+            </div>
+        </div>
+
+        <!-- FILTROS -->
+        <div class="filters-bar">
+            <select id="filterAno"></select>
+            <select id="filterMes">
+                <option value="">Todos os meses</option>
+                <option value="0">Janeiro</option><option value="1">Fevereiro</option>
+                <option value="2">Março</option><option value="3">Abril</option>
+                <option value="4">Maio</option><option value="5">Junho</option>
+                <option value="6">Julho</option><option value="7">Agosto</option>
+                <option value="8">Setembro</option><option value="9">Outubro</option>
+                <option value="10">Novembro</option><option value="11">Dezembro</option>
+            </select>
+            <select id="filterPagamento">
+                <option value="">Todos</option>
+                <option value="Pago">Pago</option>
+                <option value="Não pago">Não pago</option>
+            </select>
+            <div class="chart-toggle">
+                <button class="btn-chart-type active" id="btnBar">📊 Colunas</button>
+                <button class="btn-chart-type" id="btnLine">📈 Linha</button>
+            </div>
+        </div>
+
+        <!-- GRÁFICO -->
+        <div class="chart-card">
+            <canvas id="finChart" height="80"></canvas>
+        </div>
+
+        <!-- EXPORTAR -->
+        <div class="export-bar">
+            <button class="btn-export" id="btnExportCsv">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg>
+                Exportar CSV
+            </button>
+            <button class="btn-export" id="btnExportXlsx">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zM8 18l2-3-2-3h1.5l1.25 2 1.25-2H13.5l-2 3 2 3H12l-1.25-2L9.5 18H8z"/></svg>
+                Exportar Excel
+            </button>
+        </div>
+
+        <!-- TABELA -->
+        <div class="fin-table-wrap">
+            <table class="fin-table">
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Título</th>
+                        <th>Placa</th>
+                        <th>Valor</th>
+                        <th>Prazo</th>
+                        <th>Status</th>
+                        <th>Pagamento</th>
+                    </tr>
+                </thead>
+                <tbody id="finTableBody">
+                    <tr><td colspan="7" class="fin-empty">Carregando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="./js/main.js"></script>
+    <script type="module" src="./js/financeiro.js"></script>
+</body>
+</html>

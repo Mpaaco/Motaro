@@ -345,3 +345,125 @@ header {
     width: 150px;
   }
 }
+
+/* =========================================
+   SOLICITAÇÕES DE SERVIÇO
+   ========================================= */
+.solicitacoes {
+  background-color: #FFFFFF;
+  padding: 20px 10px;
+  border-radius: 20px;
+  margin-top: 20px;
+}
+
+.solicitacoes .titulo h2 {
+  color: #0D0D0D;
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.solicitacoes .titulo h2::after {
+  content: '';
+  display: block;
+  width: 36px;
+  height: 3px;
+  background-color: #7AD95F;
+  border-radius: 2px;
+  margin: 6px auto 0;
+}
+
+.solicitacoes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.solicitacao-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #F5F5F5;
+  border-radius: 16px;
+  padding: 16px 20px;
+  gap: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.solicitacao-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.solicitacao-nome {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0D0D0D;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.solicitacao-titulo {
+  font-size: 12px;
+  font-weight: 500;
+  color: #626262;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.solicitacao-prazo {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  background-color: #f0fbe8;
+  border: 1px solid #c8f0a8;
+  border-radius: 20px;
+  padding: 5px 12px;
+}
+
+.solicitacao-prazo span {
+  font-size: 11px;
+  font-weight: 600;
+  color: #3a8a2a;
+  white-space: nowrap;
+}
+
+.solicitacao-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.solicitacoes-empty {
+  text-align: center;
+  color: #8C8C8C;
+  font-size: 13px;
+  padding: 20px 0;
+}
+
+@media (min-width: 768px) {
+  .solicitacoes {
+    padding: 30px 20px;
+  }
+
+  .solicitacoes-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .solicitacoes-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

@@ -461,3 +461,252 @@
 .btn-capture:active .capture-inner {
     transform: scale(0.9);
 }
+
+/* =========================================
+   CPF SEARCH CARD
+   ========================================= */
+.cpf-search-card {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 16px;
+}
+
+.cpf-search-row {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+}
+
+.cpf-input-wrapper {
+    flex: 1;
+}
+
+.btn-buscar {
+    background-color: #7AD95F;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 10px;
+    padding: 0 20px;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s, transform 0.15s;
+}
+
+.btn-buscar:hover  { background-color: #6AC94F; }
+.btn-buscar:active { transform: scale(0.96); }
+
+/* =========================================
+   CLIENT FOUND CARD
+   ========================================= */
+.client-card {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: #F0FBE8;
+    border: 1.5px solid #7AD95F;
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+}
+
+.client-card-icon {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    background-color: #e4f8d5;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.client-card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.client-nome {
+    font-size: 15px;
+    font-weight: 700;
+    color: #0D0D0D;
+    margin: 0;
+}
+
+.client-veiculo {
+    font-size: 12px;
+    font-weight: 500;
+    color: #626262;
+    margin: 0;
+}
+
+/* =========================================
+   HISTÓRICO DE REGISTROS
+   ========================================= */
+.historico-section {
+    width: 100%;
+    max-width: 400px;
+    margin-top: 32px;
+    padding-bottom: 40px;
+}
+
+.historico-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0D0D0D;
+    margin-bottom: 16px;
+}
+
+.historico-title::after {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 3px;
+    background-color: #7AD95F;
+    border-radius: 2px;
+    margin-top: 6px;
+}
+
+.historico-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.historico-item {
+    background-color: #FFFFFF;
+    border: 1px solid #E8E8E8;
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+.historico-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.historico-date {
+    font-size: 11px;
+    color: #8C8C8C;
+    font-weight: 500;
+}
+
+.historico-valor {
+    font-size: 13px;
+    font-weight: 700;
+    color: #7AD95F;
+}
+
+.historico-desc {
+    font-size: 13px;
+    color: #333333;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.historico-pagamento {
+    font-size: 11px;
+    color: #8C8C8C;
+    text-transform: capitalize;
+}
+
+/* =========================================
+   VEHICLE SELECTOR
+   ========================================= */
+.veiculo-selector {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 20px;
+}
+
+.veiculo-question {
+    font-size: 13px;
+    font-weight: 700;
+    color: #0D0D0D;
+    margin-bottom: 12px;
+}
+
+.veiculo-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.veiculo-option-btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #F5F5F5;
+    border: 1.5px solid #E0E0E0;
+    border-radius: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    text-align: left;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    color: #0D0D0D;
+    transition: border-color 0.2s, background 0.2s;
+    width: 100%;
+}
+
+.veiculo-option-btn:hover { border-color: #7AD95F; background: #f0fbe8; }
+.veiculo-option-btn.selected { border-color: #7AD95F; background: #e4f8d5; }
+
+.veiculo-placa {
+    background: #7AD95F;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 6px;
+    padding: 3px 8px;
+}
+
+.btn-novo-veiculo {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: 1.5px dashed #7AD95F;
+    border-radius: 12px;
+    padding: 10px 16px;
+    color: #7AD95F;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
+    cursor: pointer;
+    width: 100%;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.btn-novo-veiculo:hover { background: #f0fbe8; }
+
+.section-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #8C8C8C;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 16px 0 8px;
+}
+
+.page-title h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #0D0D0D;
+    text-align: center;
+    margin: 24px 0 20px;
+}
+
+.page-title h1 .highlight-green { color: #7AD95F; }

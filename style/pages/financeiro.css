@@ -1,0 +1,211 @@
+/* =========================================
+   FINANCEIRO PAGE STYLES
+   ========================================= */
+
+.financeiro-page {
+    padding: 20px;
+    background-color: #FAFAFA;
+    min-height: calc(100vh - 60px);
+}
+
+.fin-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #0D0D0D;
+    text-align: center;
+    margin: 24px 0 24px;
+}
+
+.fin-title span { color: #7AD95F; }
+
+/* SUMMARY CARDS */
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.summary-card {
+    background: #FFFFFF;
+    border: 1px solid #E8E8E8;
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+
+.summary-card.highlight {
+    background: linear-gradient(135deg, #7AD95F, #5ec444);
+    border-color: transparent;
+}
+
+.summary-card.highlight .summary-label,
+.summary-card.highlight .summary-value { color: #fff; }
+
+.summary-icon { font-size: 20px; }
+
+.summary-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #8C8C8C;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.summary-value {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0D0D0D;
+    line-height: 1.1;
+}
+
+/* FILTERS */
+.filters-bar {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.filters-bar select,
+.filters-bar input {
+    background: #fff;
+    border: 1px solid #E0E0E0;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    color: #333;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.filters-bar select:focus,
+.filters-bar input:focus { border-color: #7AD95F; }
+
+.chart-toggle {
+    display: flex;
+    gap: 6px;
+    margin-left: auto;
+}
+
+.btn-chart-type {
+    background: #F5F5F5;
+    border: 1px solid #E0E0E0;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
+    cursor: pointer;
+    color: #626262;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.btn-chart-type.active {
+    background: #7AD95F;
+    border-color: #7AD95F;
+    color: #fff;
+}
+
+/* CHART */
+.chart-card {
+    background: #FFFFFF;
+    border: 1px solid #E8E8E8;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+
+.chart-card canvas { width: 100% !important; }
+
+/* EXPORT BUTTONS */
+.export-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.btn-export {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #FFFFFF;
+    border: 1.5px solid #7AD95F;
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
+    color: #3a8a2a;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+}
+
+.btn-export:hover  { background: #f0fbe8; }
+.btn-export:active { transform: scale(0.96); }
+
+/* TABLE */
+.fin-table-wrap {
+    background: #fff;
+    border: 1px solid #E8E8E8;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    overflow-x: auto;
+    margin-bottom: 40px;
+}
+
+.fin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.fin-table thead {
+    background: #F5F5F5;
+}
+
+.fin-table th {
+    padding: 12px 14px;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 700;
+    color: #8C8C8C;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+}
+
+.fin-table td {
+    padding: 12px 14px;
+    border-top: 1px solid #F0F0F0;
+    color: #0D0D0D;
+    white-space: nowrap;
+}
+
+.fin-table tbody tr:hover { background: #FAFAFA; }
+
+.fin-empty {
+    text-align: center;
+    padding: 40px;
+    color: #8C8C8C;
+    font-size: 13px;
+}
+
+/* Cor "Não pago" exclusiva */
+.status-tag.nao-pago {
+    background-color: #FFE0E0;
+    color: #C62828;
+}
+
+@media (min-width: 768px) {
+    .financeiro-page { padding: 40px; }
+    .summary-grid { grid-template-columns: repeat(4, 1fr); }
+}

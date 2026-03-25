@@ -104,3 +104,37 @@ body {
         transform: translateY(-16px);
     }
 }
+
+/* =========================================
+   STATUS TAGS (globais)
+   ========================================= */
+.status-tag {
+    display: inline-block;
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 10px;
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.2s, transform 0.15s;
+    white-space: nowrap;
+    user-select: none;
+}
+
+.status-tag:active { transform: scale(0.94); }
+
+.status-tag.em-andamento {
+    background-color: #FFD700;
+    color: #0D0D0D;
+}
+
+.status-tag.finalizado {
+    background-color: #A8E6A3;
+    color: #0D0D0D;
+}
+
+.status-tag.nao-pago {
+    background-color: #FFE0E0;
+    color: #C62828;
+}

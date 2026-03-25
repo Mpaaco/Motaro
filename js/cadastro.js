@@ -1,82 +1,71 @@
-// JS file to handle form validation for the MotaroApp registration.
-document.addEventListener("DOMContentLoaded", () => {
-    
-    const form = document.querySelector(".cadastro-form");
+import { maskCpf, maskPhone } from './utils/masks.js';
+import { isValidCpf, isValidPhone, isValidYear } from './utils/validators.js';
+import { saveClient } from './utils/api.js';
+
+const maskPlaca = (v) => {
+    v = v.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (v.length > 7) v = v.slice(0, 7);
+    if (v.length > 3) v = v.slice(0, 3) + '-' + v.slice(3);
+    return v;
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    const form      = document.querySelector('.cadastro-form');
+    const btnProximo = document.getElementById('btnProximo');
     const inputs = {
-        nome: document.getElementById("nome"),
-        cpf: document.getElementById("cpf"),
-        contato: document.getElementById("contato"),
-        modelo: document.getElementById("modelo"),
-        ano: document.getElementById("ano")
+        nome:    document.getElementById('nome'),
+        cpf:     document.getElementById('cpf'),
+        contato: document.getElementById('contato'),
+        marca:   document.getElementById('marca'),
+        modelo:  document.getElementById('modelo'),
+        ano:     document.getElementById('ano'),
+        placa:   document.getElementById('placa'),
     };
 
-    // 1. Validation for "Nome do cliente" (Only letters and spaces)
-    inputs.nome.addEventListener("input", function() {
-        this.value = this.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, "");
+    const requiredFields = Object.values(inputs);
+
+    function checkFormFilled() {
+        const filled = requiredFields.every(el => el.value.trim() !== '');
+        btnProximo.disabled = !filled;
+        btnProximo.style.opacity = filled ? '1' : '0.45';
+        btnProximo.style.cursor  = filled ? 'pointer' : 'not-allowed';
+    }
+
+    requiredFields.forEach(el => el.addEventListener('input', checkFormFilled));
+    checkFormFilled();
+
+    btnProximo.addEventListener('click', () => {
+        if (btnProximo.disabled) return;
+        window.location.href = './registro.html';
     });
 
-    // 2. Formatting & Validation for CPF (000.000.000-00)
-    inputs.cpf.addEventListener("input", function() {
-        let val = this.value.replace(/\D/g, "");
-        if (val.length > 11) val = val.substring(0, 11);
-        
-        val = val.replace(/(\d{3})(\d)/, "$1.$2");
-        val = val.replace(/(\d{3})(\d)/, "$1.$2");
-        val = val.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
-        
-        this.value = val;
-    });
+    inputs.nome.addEventListener('input',    function () { this.value = this.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, ''); });
+    inputs.cpf.addEventListener('input',     function () { this.value = maskCpf(this.value); });
+    inputs.contato.addEventListener('input', function () { this.value = maskPhone(this.value); });
+    inputs.ano.addEventListener('input',     function () { this.value = this.value.replace(/\D/g, '').slice(0, 4); });
+    inputs.placa.addEventListener('input',   function () { this.value = maskPlaca(this.value); });
 
-    // 3. Formatting & Validation for Cellphone Number ((00) 00000-0000)
-    inputs.contato.addEventListener("input", function() {
-        let val = this.value.replace(/\D/g, "");
-        if (val.length > 11) val = val.substring(0, 11);
-        
-        if (val.length > 2) val = val.replace(/^(\d{2})(\d)/g, "($1) $2");
-        if (val.length > 7) val = val.replace(/(\d{5})(\d)/, "$1-$2");
-        
-        this.value = val;
-    });
-
-    // 4. Validation for "Modelo do carro" (Only text and numbers allowed, but mainly text preference via HTML type)
-    // Assuming mostly text with potential numbers like "Gol 1.0" or "X6" - standard text input handles this without strict regex blocking.
-
-    // 5. Validation for "Ano do carro" (4 digits, valid ranges like 1900-2099)
-    inputs.ano.addEventListener("input", function() {
-        this.value = this.value.replace(/\D/g, ""); // Only numbers
-        if (this.value.length > 4) this.value = this.value.slice(0, 4);
-    });
-
-    // Handle Form Submission (Registrar Solicitação)
-    form.addEventListener("submit", (e) => {
+    form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
-        // Simple built-in validation triggers based on 'required' in HTML.
-        // If execution reaches here, all 'required' fields are superficially filled.
 
-        if (inputs.cpf.value.length < 14) {
-            alert("Por favor, preencha o CPF corretamente.");
-            inputs.cpf.focus();
-            return;
+        if (!isValidCpf(inputs.cpf.value))     { alert('CPF inválido.');       inputs.cpf.focus();     return; }
+        if (!isValidPhone(inputs.contato.value)){ alert('Contato inválido.');   inputs.contato.focus(); return; }
+        if (!isValidYear(inputs.ano.value))     { alert('Ano inválido.');        inputs.ano.focus();     return; }
+
+        try {
+            const result = await saveClient({
+                nome:    inputs.nome.value.trim(),
+                cpf:     inputs.cpf.value.trim(),
+                contato: inputs.contato.value.trim(),
+                marca:   inputs.marca.value.trim(),
+                modelo:  inputs.modelo.value.trim(),
+                ano:     parseInt(inputs.ano.value),
+                placa:   inputs.placa.value.trim(),
+            });
+            alert(result.message || 'Cadastro realizado com sucesso!');
+            window.location.href = '/';
+        } catch {
+            alert('Erro ao salvar. Verifique a conexão com o servidor.');
         }
-
-        if (inputs.contato.value.length < 14) {
-            alert("Por favor, preencha o número de contato completo.");
-            inputs.contato.focus();
-            return;
-        }
-
-        if (inputs.ano.value.length < 4 || inputs.ano.value < 1920 || inputs.ano.value > new Date().getFullYear() + 1) {
-            alert("Por favor, insira um ano válido para o carro.");
-            inputs.ano.focus();
-            return;
-        }
-
-        // Simulating success
-        alert("Cadastro realizado com sucesso!");
-        form.reset();
-        
-        // Return to home or reset form flow
-        // window.location.href = "index.html";
     });
 });

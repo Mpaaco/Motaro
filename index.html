@@ -12,6 +12,7 @@
     <link rel="icon" type="image/png" href="./assent/img/logo.png">
     <link rel="stylesheet" href="./style/global/global.css">
     <link rel="stylesheet" href="./style/pages/home.css">
+    <link rel="stylesheet" href="./style/pages/solicitacoes.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -39,7 +40,10 @@
         <nav class="menu" id="menu">
             <ul>
                 <li><a href="index.html">Home</a></li>
-                <li><a href="cadastro.html">Registro</a></li>
+                <li><a href="cadastro.html">Registro de Cliente</a></li>
+                <li><a href="registro.html">Registro de Solicitação</a></li>
+                <li><a href="solicitacoes.html">Solicitações</a></li>
+                <li><a href="financeiro.html">Financeiro</a></li>
             </ul>
         </nav>
         <div class="namepage">
@@ -62,7 +66,7 @@
         <div class="fila">
             <div class="textf">
                 <p>Temos <span>04 carros</span> na fila</p>
-            </div>
+            </div>  
             <div class="imgf">
                 <img src="./assent/img/carro2.png" alt="carro">
             </div>
@@ -86,7 +90,67 @@
                 </div>
             </div>
         </div>
+
+        <!-- SOLICITAÇÕES DE SERVIÇO -->
+        <div class="solicitacoes">
+            <div class="titulo">
+                <h2>Solicitações</h2>
+            </div>
+            <div class="solicitacoes-list" id="solicitacoes-list">
+                <p class="solicitacoes-empty">Carregando...</p>
+            </div>
+        </div>
     </section>
+
+    <!-- MODAL DETALHE DO REGISTRO -->
+    <div class="modal-overlay" id="homeModal2Overlay">
+        <div class="modal-sheet">
+            <div class="modal-handle"></div>
+            <div class="modal-header">
+                <div>
+                    <p class="modal-title" id="homeModal2Title">—</p>
+                    <p class="modal-subtitle" id="homeModal2Date">—</p>
+                </div>
+                <button class="btn-modal-close" id="btnCloseHomeModal2">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#626262"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                </button>
+            </div>
+            <div class="detail-section" id="homeDetailStatus"></div>
+            <div class="detail-divider"></div>
+            <div class="detail-section">
+                <p class="detail-label">Descrição</p>
+                <p class="detail-value" id="homeDetailDescricao">—</p>
+            </div>
+            <div class="detail-row">
+                <div class="detail-section">
+                    <p class="detail-label">Valor</p>
+                    <p class="detail-value" id="homeDetailValor">—</p>
+                </div>
+                <div class="detail-section">
+                    <p class="detail-label">Pagamento</p>
+                    <p class="detail-value" id="homeDetailPagamento">—</p>
+                </div>
+            </div>
+            <div class="detail-section" id="detail-prazo-home">
+                <p class="detail-label">Prazo de Entrega</p>
+                <span class="detail-pill">📅 <span id="homeDetailPrazo">—</span></span>
+            </div>
+            <div class="detail-section">
+                <p class="detail-label">Fotos</p>
+                <div class="photos-grid" id="homeDetailFotos"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LIGHTBOX -->
+    <div class="lightbox-overlay" id="homeLightboxOverlay">
+        <button class="lightbox-close" id="homeLightboxClose">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+        <img class="lightbox-img" id="homeLightboxImg" src="" alt="Foto ampliada">
+    </div>
+
     <script src="./js/main.js"></script>
+    <script type="module" src="./js/home.js"></script>
 </body>
 </html>

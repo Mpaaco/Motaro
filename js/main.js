@@ -6,6 +6,21 @@ toggle.addEventListener("click", () => {
   toggle.classList.toggle("active");
 });
 
+// Fechar menu com ESC ou clicando fora
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    menu.classList.remove("active");
+    toggle.classList.remove("active");
+  }
+});
+
+document.addEventListener("click", (e) => {
+  if (!menu.contains(e.target) && !toggle.contains(e.target)) {
+    menu.classList.remove("active");
+    toggle.classList.remove("active");
+  }
+});
+
 /* =========================================
    LOADING SCREEN LOGIC
    ========================================= */

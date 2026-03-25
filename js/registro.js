@@ -1,50 +1,132 @@
-/**
- * REGRISTRO.JS
- * Lógica para o formulário da página de Registro da Motaro.
- */
+import { maskCpf, maskCurrency, maskDate } from './utils/masks.js';
+import { findClientByCpf, saveServiceRecord, getServiceRecords, addVehicle, updateRecordStatus } from './utils/api.js';
 
-document.addEventListener("DOMContentLoaded", () => {
-    /* =========================================
-       1. CONTADOR DE CARACTERES
-       ========================================= */
+const maskPlaca = (v) => {
+    v = v.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 7);
+    if (v.length > 3) v = v.slice(0, 3) + '-' + v.slice(3);
+    return v;
+};
+
+function buildStatusTag(record) {
+    const cls = record.status === 'Finalizado' ? 'finalizado' : 'em-andamento';
+    return `<button class="status-tag ${cls}" data-id="${record._id}" data-status="${record.status}">${record.status}</button>`;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    /* === CPF SEARCH === */
+    const cpfSearchInput  = document.getElementById('cpfSearch');
+    const btnBuscar       = document.getElementById('btnBuscar');
+    const clientCard      = document.getElementById('clientCard');
+    const clientNome      = document.getElementById('clientNome');
+    const clientVeiculo   = document.getElementById('clientVeiculo');
+    const veiculoSelector = document.getElementById('veiculoSelector');
+    const veiculoOptions  = document.getElementById('veiculoOptions');
+    const btnNovoVeiculo  = document.getElementById('btnNovoVeiculo');
+    const novoVeiculoForm = document.getElementById('novoVeiculoForm');
+    const btnSalvarVeiculo= document.getElementById('btnSalvarVeiculo');
+    const registroForm    = document.getElementById('registroForm');
+    const placaSelecionada= document.getElementById('placaSelecionada');
+    const historicoSection= document.getElementById('historicoSection');
+    const historicoList   = document.getElementById('historicoList');
+
+    let currentClient = null;
+    let currentPlaca  = null;
+
+    cpfSearchInput.addEventListener('input', function () { this.value = maskCpf(this.value); });
+
+    btnBuscar.addEventListener('click', async () => {
+        const cpf = cpfSearchInput.value.trim();
+        if (!cpf) return;
+        try {
+            const client = await findClientByCpf(cpf);
+            if (!client) {
+                clientCard.style.display = 'none';
+                veiculoSelector.style.display = 'none';
+                registroForm.style.display = 'none';
+                alert('Cliente não encontrado. Cadastre-o primeiro.');
+                return;
+            }
+            currentClient = client;
+            clientNome.textContent    = client.nome;
+            clientVeiculo.textContent = `${client.veiculos?.length || 0} veículo(s) cadastrado(s)`;
+            clientCard.style.display  = 'flex';
+            renderVeiculoOptions(client.veiculos || []);
+            veiculoSelector.style.display = 'block';
+            registroForm.style.display    = 'none';
+            renderHistorico(client.cpf);
+        } catch {
+            alert('Erro ao buscar cliente.');
+        }
+    });
+
+    function renderVeiculoOptions(veiculos) {
+        if (!veiculos.length) {
+            veiculoOptions.innerHTML = '<p style="font-size:13px;color:#8C8C8C;margin-bottom:10px;">Nenhum veículo cadastrado ainda.</p>';
+            return;
+        }
+        veiculoOptions.innerHTML = veiculos.map(v => `
+            <button type="button" class="veiculo-option-btn" data-placa="${v.placa}">
+                <strong>${v.marca} ${v.modelo} (${v.ano})</strong>
+                <span class="veiculo-placa">${v.placa}</span>
+            </button>
+        `).join('');
+
+        veiculoOptions.querySelectorAll('.veiculo-option-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                veiculoOptions.querySelectorAll('.veiculo-option-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                currentPlaca = btn.dataset.placa;
+                placaSelecionada.value = currentPlaca;
+                registroForm.style.display = 'flex';
+                novoVeiculoForm.style.display = 'none';
+            });
+        });
+    }
+
+    btnNovoVeiculo.addEventListener('click', () => {
+        novoVeiculoForm.style.display = novoVeiculoForm.style.display === 'none' ? 'block' : 'none';
+        document.getElementById('nvPlaca').addEventListener('input', function () { this.value = maskPlaca(this.value); });
+    });
+
+    btnSalvarVeiculo.addEventListener('click', async () => {
+        const marca  = document.getElementById('nvMarca').value.trim();
+        const modelo = document.getElementById('nvModelo').value.trim();
+        const ano    = document.getElementById('nvAno').value.trim();
+        const placa  = document.getElementById('nvPlaca').value.trim();
+
+        if (!marca || !modelo || !ano || !placa) { alert('Preencha todos os campos do veículo.'); return; }
+
+        try {
+            const result = await addVehicle(currentClient.cpf, { marca, modelo, ano: parseInt(ano), placa });
+            if (result.error) { alert(result.error); return; }
+            currentClient = result.client;
+            currentPlaca = placa;
+            placaSelecionada.value = placa;
+            renderVeiculoOptions(currentClient.veiculos);
+            novoVeiculoForm.style.display = 'none';
+            registroForm.style.display = 'flex';
+            alert('Veículo adicionado!');
+        } catch {
+            alert('Erro ao adicionar veículo.');
+        }
+    });
+
+    /* === CONTADOR DE CARACTERES === */
     const textarea = document.getElementById('descricao');
     const charCount = document.getElementById('charCount');
-    const maxLength = 300;
-
     textarea.addEventListener('input', () => {
-        const textLength = textarea.value.length;
-        charCount.textContent = `${textLength}/${maxLength}`;
-
-        if (textLength >= maxLength) {
-            charCount.style.color = '#FF5252'; // Alert color
-        } else {
-            charCount.style.color = '#8C8C8C'; // Default color
-        }
+        const len = textarea.value.length;
+        charCount.textContent = `${len}/300`;
+        charCount.style.color = len >= 300 ? '#FF5252' : '#8C8C8C';
     });
 
-    /* =========================================
-       2. MÁSCARA DE MOEDA (BRL)
-       ========================================= */
+    /* === MÁSCARAS === */
     const valorInput = document.getElementById('valorOrcamento');
+    const prazoInput = document.getElementById('prazoEntrega');
+    valorInput.addEventListener('input', (e) => { e.target.value = maskCurrency(e.target.value); });
+    prazoInput.addEventListener('input', (e) => { e.target.value = maskDate(e.target.value); });
 
-    valorInput.addEventListener('input', (e) => {
-        let value = e.target.value;
-        value = value.replace(/\D/g, ""); // Remove tudo que não é dígito
-
-        if (value.length > 0) {
-            // Formata para R$ 0,00
-            value = (parseInt(value) / 100).toFixed(2) + "";
-            value = value.replace(".", ",");
-            value = value.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
-            e.target.value = `R$ ${value}`;
-        } else {
-            e.target.value = "";
-        }
-    });
-
-    /* =========================================
-       3. UPLOAD DE IMAGENS (MÁX 4)
-       ========================================= */
+    /* === UPLOAD === */
     const fileInput = document.getElementById('fotoProblema');
     const previewContainer = document.getElementById('imagePreview');
     const MAX_IMAGES = 4;
@@ -52,227 +134,144 @@ document.addEventListener("DOMContentLoaded", () => {
 
     fileInput.addEventListener('change', (e) => {
         const files = Array.from(e.target.files);
-
-        // Verifica limite
-        if (selectedFiles.length + files.length > MAX_IMAGES) {
-            alert(`Você pode enviar no máximo ${MAX_IMAGES} fotos.`);
-            return;
-        }
-
-        files.forEach(file => addFileToPreview(file));
-
-        // Reseta o input para permitir selecionar a mesma imagem se for apagada
+        if (selectedFiles.length + files.length > MAX_IMAGES) { alert(`Máximo de ${MAX_IMAGES} fotos.`); return; }
+        files.forEach(f => addFileToPreview(f));
         fileInput.value = '';
     });
 
-    /* =========================================
-       3.5 CAMERA IN-APP LOGIC
-       ========================================= */
+    /* === CÂMERA === */
     const cameraModal = document.getElementById('cameraModal');
     const cameraVideo = document.getElementById('cameraVideo');
     const cameraCanvas = document.getElementById('cameraCanvas');
-    const uploadZone = cameraModal.parentElement; // The .upload-zone parent
+    const uploadZone = cameraModal.parentElement;
     const btnOpenCamera = document.getElementById('btnOpenCamera');
     const btnCloseCamera = document.getElementById('btnCloseCamera');
     const btnCapturePhoto = document.getElementById('btnCapturePhoto');
     const btnSwitchCamera = document.getElementById('btnSwitchCamera');
-
-    // Approval UI Elements
     const cameraLiveControls = document.getElementById('cameraLiveControls');
     const cameraApprovalControls = document.getElementById('cameraApprovalControls');
     const btnApprovePhoto = document.getElementById('btnApprovePhoto');
     const btnRejectPhoto = document.getElementById('btnRejectPhoto');
-
     let currentStream = null;
-    let currentFacingMode = 'environment'; // Default to back camera
+    let currentFacingMode = 'environment';
 
-    // Abre a câmera
     btnOpenCamera.addEventListener('click', () => {
-        if (selectedFiles.length >= MAX_IMAGES) {
-            alert(`Você pode enviar no máximo ${MAX_IMAGES} fotos.`);
-            return;
-        }
-
-        // getUserMedia só funciona em contexto seguro (https ou localhost)
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-            alert('Seu navegador não suporta acesso à câmera, ou a página não está sendo servida de forma segura (HTTPS/localhost).');
-            return;
-        }
-
+        if (selectedFiles.length >= MAX_IMAGES) { alert(`Máximo de ${MAX_IMAGES} fotos.`); return; }
+        if (!navigator.mediaDevices?.getUserMedia) { alert('Câmera não suportada neste contexto.'); return; }
         uploadZone.classList.add('camera-open');
         cameraModal.style.display = 'block';
         startCamera();
     });
 
-    // Fecha a câmera
     btnCloseCamera.addEventListener('click', stopCamera);
+    btnSwitchCamera.addEventListener('click', () => { currentFacingMode = currentFacingMode === 'environment' ? 'user' : 'environment'; startCamera(); });
 
-    // Troca de câmera (Frontal/Traseira)
-    btnSwitchCamera.addEventListener('click', () => {
-        currentFacingMode = currentFacingMode === 'environment' ? 'user' : 'environment';
-        startCamera();
-    });
-
-    // Função para iniciar o stream da câmera
     async function startCamera() {
-        if (currentStream) {
-            currentStream.getTracks().forEach(track => track.stop());
-        }
-
+        if (currentStream) currentStream.getTracks().forEach(t => t.stop());
         try {
-            const constraints = {
-                video: {
-                    facingMode: currentFacingMode,
-                    width: { ideal: 1920 },
-                    height: { ideal: 1080 }
-                },
-                audio: false
-            };
-
-            currentStream = await navigator.mediaDevices.getUserMedia(constraints);
+            currentStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: currentFacingMode, width: { ideal: 1920 }, height: { ideal: 1080 } }, audio: false });
             cameraVideo.srcObject = currentStream;
-        } catch (error) {
-            console.error('Erro ao acessar a câmera:', error);
-            alert('Não foi possível acessar a câmera. Verifique as permissões.');
-            stopCamera();
-        }
+        } catch { alert('Não foi possível acessar a câmera.'); stopCamera(); }
     }
 
-    // Função para parar a câmera e fechar modal
     function stopCamera() {
-        if (currentStream) {
-            currentStream.getTracks().forEach(track => track.stop());
-            currentStream = null;
-        }
+        if (currentStream) { currentStream.getTracks().forEach(t => t.stop()); currentStream = null; }
         cameraVideo.srcObject = null;
         cameraModal.style.display = 'none';
         uploadZone.classList.remove('camera-open');
-
-        // Reset UI state
-        cameraVideo.style.display = 'block';
-        cameraCanvas.style.display = 'none';
-        cameraLiveControls.style.display = 'flex';
-        cameraApprovalControls.style.display = 'none';
+        cameraVideo.style.display = 'block'; cameraCanvas.style.display = 'none';
+        cameraLiveControls.style.display = 'flex'; cameraApprovalControls.style.display = 'none';
     }
 
-    // Capturar foto (Stage 1: FREEZE)
     btnCapturePhoto.addEventListener('click', () => {
         if (!currentStream) return;
-
-        // Configura o canvas com as dimensões reais do vídeo
-        cameraCanvas.width = cameraVideo.videoWidth;
-        cameraCanvas.height = cameraVideo.videoHeight;
-
-        // Desenha o frame atual no canvas
-        const ctx = cameraCanvas.getContext('2d');
-        ctx.drawImage(cameraVideo, 0, 0, cameraCanvas.width, cameraCanvas.height);
-
-        // UI State: Show Captured Frame, Hide Live Video
-        cameraVideo.style.display = 'none';
-        cameraCanvas.style.display = 'block';
-        cameraLiveControls.style.display = 'none';
-        cameraApprovalControls.style.display = 'flex';
+        cameraCanvas.width = cameraVideo.videoWidth; cameraCanvas.height = cameraVideo.videoHeight;
+        cameraCanvas.getContext('2d').drawImage(cameraVideo, 0, 0, cameraCanvas.width, cameraCanvas.height);
+        cameraVideo.style.display = 'none'; cameraCanvas.style.display = 'block';
+        cameraLiveControls.style.display = 'none'; cameraApprovalControls.style.display = 'flex';
     });
 
-    // Tentar Novamente (Stage 2: REJECT)
     btnRejectPhoto.addEventListener('click', () => {
-        cameraVideo.style.display = 'block';
-        cameraCanvas.style.display = 'none';
-        cameraLiveControls.style.display = 'flex';
-        cameraApprovalControls.style.display = 'none';
+        cameraVideo.style.display = 'block'; cameraCanvas.style.display = 'none';
+        cameraLiveControls.style.display = 'flex'; cameraApprovalControls.style.display = 'none';
     });
 
-    // Aprovado (Stage 2: CONFIRM)
     btnApprovePhoto.addEventListener('click', () => {
-        // Converte para Blob (File)
         cameraCanvas.toBlob((blob) => {
-            if (!blob) {
-                alert('Erro ao capturar a imagem.');
-                return;
-            }
-
-            // Cria um arquivo fictício a partir do blob
-            const fileName = `foto_camera_${Date.now()}.jpg`;
-            const file = new File([blob], fileName, { type: 'image/jpeg' });
-
-            // Adiciona ao array de files
-            addFileToPreview(file);
-
-            // Fecha a câmera após aprovação
+            if (!blob) { alert('Erro ao capturar.'); return; }
+            addFileToPreview(new File([blob], `foto_${Date.now()}.jpg`, { type: 'image/jpeg' }));
             stopCamera();
-        }, 'image/jpeg', 0.85); // 85% de qualidade
+        }, 'image/jpeg', 0.85);
     });
 
-    // Função auxiliar extraída para suportar tanto Input nativo quanto Câmera In-App
     function addFileToPreview(file) {
         if (selectedFiles.length >= MAX_IMAGES || !file.type.startsWith('image/')) return;
-
         selectedFiles.push(file);
         const reader = new FileReader();
-
         reader.onload = (e) => {
-            const previewItem = document.createElement('div');
-            previewItem.className = 'preview-item';
-
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.alt = 'Preview da foto do problema';
-
-            const removeBtn = document.createElement('button');
-            removeBtn.className = 'btn-remove-preview';
-            removeBtn.innerHTML = 'X';
-            removeBtn.type = 'button';
-
-            removeBtn.onclick = () => {
-                const index = selectedFiles.indexOf(file);
-                if (index > -1) {
-                    selectedFiles.splice(index, 1);
-                    previewItem.remove();
-                }
-            };
-
-            previewItem.appendChild(img);
-            previewItem.appendChild(removeBtn);
-            previewContainer.appendChild(previewItem);
+            const item = document.createElement('div'); item.className = 'preview-item';
+            const img = document.createElement('img'); img.src = e.target.result;
+            const btn = document.createElement('button'); btn.className = 'btn-remove-preview'; btn.innerHTML = 'X'; btn.type = 'button';
+            btn.onclick = () => { selectedFiles.splice(selectedFiles.indexOf(file), 1); item.remove(); };
+            item.append(img, btn); previewContainer.appendChild(item);
         };
-
         reader.readAsDataURL(file);
     }
 
-    /* =========================================
-       4. MÁSCARA DE DATA (DD/MM/YYYY)
-       ========================================= */
-    const prazoInput = document.getElementById('prazoEntrega');
+    /* === HISTÓRICO === */
+    async function renderHistorico(cpf) {
+        const records = await getServiceRecords(cpf);
+        historicoSection.style.display = records.length ? 'block' : 'none';
+        historicoList.innerHTML = records.map(r => `
+            <div class="historico-item">
+                <div class="historico-header">
+                    <span class="historico-date">${new Date(r.createdAt).toLocaleDateString('pt-BR')}</span>
+                    <span class="historico-valor">${r.valor}</span>
+                </div>
+                <div style="margin: 6px 0 4px;">
+                    ${buildStatusTag(r)}
+                </div>
+                <p class="historico-desc">${r.titulo}</p>
+                <span class="historico-pagamento">${r.formaPagamento} · Prazo: ${r.prazoEntrega} · Placa: ${r.placa}</span>
+            </div>
+        `).join('');
 
-    prazoInput.addEventListener('input', (e) => {
-        let value = e.target.value.replace(/\D/g, ""); // Remove não dígitos
+        historicoList.querySelectorAll('.status-tag').forEach(tag => {
+            tag.addEventListener('click', async () => {
+                const newStatus = tag.dataset.status === 'Em andamento' ? 'Finalizado' : 'Em andamento';
+                await updateRecordStatus(tag.dataset.id, newStatus);
+                renderHistorico(cpf);
+            });
+        });
+    }
 
-        if (value.length > 8) {
-            value = value.substring(0, 8); // Limita a 8 dígitos máximos do formato data
-        }
-
-        // Aplica a formatação DD/MM/YYYY
-        if (value.length >= 5) {
-            value = value.replace(/(\d{2})(\d{2})(\d{1,4})/, "$1/$2/$3");
-        } else if (value.length >= 3) {
-            value = value.replace(/(\d{2})(\d{1,2})/, "$1/$2");
-        }
-
-        e.target.value = value;
+    /* === SUBMIT === */
+    const fileToBase64 = (file) => new Promise((resolve, reject) => {
+        const reader = new FileReader(); reader.onload = e => resolve(e.target.result); reader.onerror = reject; reader.readAsDataURL(file);
     });
 
-    /* =========================================
-       5. SUBMIT DO FORMULÁRIO (MOC)
-       ========================================= */
-    const registroForm = document.getElementById('registroForm');
-    registroForm.addEventListener('submit', (e) => {
+    registroForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        alert('Solicitação registrada com sucesso! (Demonstração)');
-        // Lógica de API iria aqui...
-        registroForm.reset();
-        charCount.textContent = `0/${maxLength}`;
-        charCount.style.color = '#8C8C8C';
-        previewContainer.innerHTML = '';
-        selectedFiles = [];
+        if (!currentClient || !currentPlaca) { alert('Selecione um veículo antes de continuar.'); return; }
+
+        const fotos = await Promise.all(selectedFiles.map(fileToBase64));
+        const record = {
+            clientCpf:      currentClient.cpf,
+            placa:          currentPlaca,
+            titulo:         document.getElementById('titulo').value.trim(),
+            descricao:      textarea.value.trim(),
+            valor:          valorInput.value.trim(),
+            formaPagamento: document.getElementById('formaPagamento').value,
+            prazoEntrega:   prazoInput.value.trim(),
+            fotos,
+        };
+
+        try {
+            await saveServiceRecord(record);
+            alert('Solicitação registrada com sucesso!');
+            window.location.href = '/';
+        } catch {
+            alert('Erro ao salvar o registro.');
+        }
     });
 });
